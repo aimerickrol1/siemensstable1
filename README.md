@@ -1,4 +1,4 @@
-# Siemens Smoke Extraction Calculator
+# Siemens CalConform
 
 Application de calcul de conformité de débit de désenfumage développée avec Expo et React Native.
 
@@ -16,7 +16,7 @@ Application de calcul de conformité de débit de désenfumage développée avec
 ```bash
 # Cloner le projet
 git clone <repository-url>
-cd siemens-smoke-extraction-app
+cd siemens-calconform
 
 # Installer les dépendances
 npm install
@@ -129,7 +129,7 @@ Créez un fichier `.env` à la racine :
 
 ```env
 EXPO_PUBLIC_API_URL=https://api.example.com
-EXPO_PUBLIC_VERSION=1.0.2
+EXPO_PUBLIC_VERSION=1.1.0
 ```
 
 ### Personnalisation

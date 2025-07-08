@@ -13,7 +13,7 @@ export default function AboutScreen() {
   const [calculationsModalVisible, setCalculationsModalVisible] = useState(false);
   const [upcomingFeaturesModalVisible, setUpcomingFeaturesModalVisible] = useState(false);
 
-  const appVersion = "1.0.3";
+  const appVersion = "1.1.0";
 
   const handleVersionPress = () => {
     setVersionModalVisible(true);

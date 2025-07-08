@@ -594,7 +594,7 @@ export default function ExportScreen() {
             </div>
             <div class="report-info">
                 <div><strong>Date :</strong> ${timestamp}</div>
-                <div><strong>Version :</strong> 1.0.3</div>
+                <div><strong>Version :</strong> 1.1.0</div>
                 <div><strong>Référence :</strong> ${project.id.substring(0, 8).toUpperCase()}</div>
             </div>
         </div>
@@ -747,7 +747,7 @@ export default function ExportScreen() {
         <!-- Pied de page -->
         <div class="footer">
             <div class="footer-note">
-                Ce rapport a été généré automatiquement par l'application Siemens Smoke Extraction Calculator v1.0.3<br>
+                Ce rapport a été généré automatiquement par l'application Siemens CalConform v1.1.0<br>
                 Conformité évaluée selon la norme NF S61-933 Annexe H
             </div>
             <div class="footer-signature">
