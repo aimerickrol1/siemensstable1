@@ -464,9 +464,10 @@ export default function ExportScreen() {
         .col-shutter { width: 15%; min-width: 80px; }
         .col-ref-flow { width: 12%; min-width: 70px; text-align: center; }
         .col-measured-flow { width: 12%; min-width: 70px; text-align: center; }
-        .col-deviation { width: 10%; min-width: 60px; text-align: center; }
-        .col-status { width: 12%; min-width: 80px; text-align: center; }
-        .col-remarks { width: 19%; min-width: 100px; }
+        .col-velocity { width: 8%; min-width: 50px; text-align: center; }
+        .col-deviation { width: 8%; min-width: 60px; text-align: center; }
+        .col-status { width: 10%; min-width: 80px; text-align: center; }
+        .col-remarks { width: 15%; min-width: 100px; }
         
         /* Pied de page */
         .footer {
@@ -694,6 +695,7 @@ export default function ExportScreen() {
                         <th class="col-shutter">Volet</th>
                         <th class="col-ref-flow">Débit Réf. (m³/h)</th>
                         <th class="col-measured-flow">Débit Mesuré (m³/h)</th>
+                        <th class="col-velocity">V. (m/s)</th>
                         <th class="col-deviation">Écart (%)</th>
                         <th class="col-status">Statut</th>
                         <th class="col-remarks">Remarques</th>
@@ -728,6 +730,7 @@ export default function ExportScreen() {
                         <td class="col-shutter"><strong>${shutter.name}</strong></td>
                         <td class="col-ref-flow">${shutter.referenceFlow.toFixed(0)}</td>
                         <td class="col-measured-flow">${shutter.measuredFlow.toFixed(0)}</td>
+                        <td class="col-velocity">${(shutter.velocity || 0).toFixed(1)}</td>
                         <td class="col-deviation">${deviation >= 0 ? '+' : ''}${deviation.toFixed(1)}%</td>
                         <td class="col-status"><span class="status-badge ${statusClass}">${compliance.label}</span></td>
                         <td class="col-remarks">${shutter.remarks || '-'}</td>

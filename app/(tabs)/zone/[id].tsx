@@ -28,6 +28,7 @@ export default function ZoneDetailScreen() {
   const [editingFlows, setEditingFlows] = useState<{[key: string]: {
     referenceFlow: string;
     measuredFlow: string;
+    velocity: string;
     hasBeenFocused: { referenceFlow: boolean; measuredFlow: boolean };
   }}>({});
 
@@ -116,6 +117,7 @@ export default function ZoneDetailScreen() {
         newEditingFlows[shutter.id] = {
           referenceFlow: shutter.referenceFlow.toString(),
           measuredFlow: shutter.measuredFlow.toString(),
+          velocity: (shutter.velocity || 0).toString(),
           hasBeenFocused: editingFlows[shutter.id]?.hasBeenFocused || { referenceFlow: false, measuredFlow: false }
         };
       });
@@ -347,7 +349,7 @@ export default function ZoneDetailScreen() {
   };
 
   // CORRIGÉ : Fonctions pour l'édition directe des débits avec mise à jour instantanée
-  const handleFlowChange = useCallback((shutterId: string, field: 'referenceFlow' | 'measuredFlow', value: string) => {
+  const handleFlowChange = useCallback((shutterId: string, field: 'referenceFlow' | 'measuredFlow' | 'velocity', value: string) => {
     setEditingFlows(prev => ({
       ...prev,
       [shutterId]: {
@@ -358,7 +360,7 @@ export default function ZoneDetailScreen() {
   }, []);
 
   // Fonction pour gérer le focus et l'effacement automatique du "0"
-  const handleFlowFocus = useCallback((shutterId: string, field: 'referenceFlow' | 'measuredFlow') => {
+  const handleFlowFocus = useCallback((shutterId: string, field: 'referenceFlow' | 'measuredFlow' | 'velocity') => {
     setEditingFlows(prev => {
       const currentEdit = prev[shutterId];
       if (!currentEdit) return prev;
@@ -393,12 +395,13 @@ export default function ZoneDetailScreen() {
   }, []);
 
   // CORRIGÉ : Sauvegarde automatique avec mise à jour instantanée de l'état local
-  const handleFlowBlur = useCallback(async (shutter: Shutter, field: 'referenceFlow' | 'measuredFlow') => {
+  const handleFlowBlur = useCallback(async (shutter: Shutter, field: 'referenceFlow' | 'measuredFlow' | 'velocity') => {
     const editData = editingFlows[shutter.id];
     if (!editData) return;
 
     const refFlow = parseFloat(editData.referenceFlow);
     const measFlow = parseFloat(editData.measuredFlow);
+    const velocity = parseFloat(editData.velocity);
 
     // Validation des valeurs
     if (isNaN(refFlow) || refFlow < 0) {
@@ -425,8 +428,20 @@ export default function ZoneDetailScreen() {
       return;
     }
 
+    if (isNaN(velocity) || velocity < 0) {
+      // Restaurer la valeur originale en cas d'erreur
+      setEditingFlows(prev => ({
+        ...prev,
+        [shutter.id]: {
+          ...prev[shutter.id],
+          velocity: (shutter.velocity || 0).toString()
+        }
+      }));
+      return;
+    }
+
     // Vérifier si les valeurs ont changé
-    const hasChanged = refFlow !== shutter.referenceFlow || measFlow !== shutter.measuredFlow;
+    const hasChanged = refFlow !== shutter.referenceFlow || measFlow !== shutter.measuredFlow || velocity !== (shutter.velocity || 0);
     
     if (hasChanged) {
       try {
@@ -434,6 +449,7 @@ export default function ZoneDetailScreen() {
         await storage.updateShutter(shutter.id, {
           referenceFlow: refFlow,
           measuredFlow: measFlow,
+          velocity: velocity,
         });
         
         // CORRIGÉ : Mise à jour instantanée de l'état local du volet SANS recharger toute la zone
@@ -444,13 +460,13 @@ export default function ZoneDetailScreen() {
             ...prevZone,
             shutters: prevZone.shutters.map(s => 
               s.id === shutter.id 
-                ? { ...s, referenceFlow: refFlow, measuredFlow: measFlow, updatedAt: new Date() }
+                ? { ...s, referenceFlow: refFlow, measuredFlow: measFlow, velocity: velocity, updatedAt: new Date() }
                 : s
             )
           };
         });
         
-        console.log(`✅ Volet ${shutter.name} mis à jour instantanément: ${refFlow}/${measFlow}`);
+        console.log(`✅ Volet ${shutter.name} mis à jour instantanément: ${refFlow}/${measFlow}/${velocity}`);
         
       } catch (error) {
         console.error('Erreur lors de la sauvegarde automatique:', error);
@@ -460,7 +476,8 @@ export default function ZoneDetailScreen() {
           [shutter.id]: {
             ...prev[shutter.id],
             referenceFlow: shutter.referenceFlow.toString(),
-            measuredFlow: shutter.measuredFlow.toString()
+            measuredFlow: shutter.measuredFlow.toString(),
+            velocity: (shutter.velocity || 0).toString()
           }
         }));
       }
@@ -677,6 +694,27 @@ export default function ZoneDetailScreen() {
                 onChangeText={(text) => handleFlowChange(item.id, 'measuredFlow', text)}
                 onFocus={() => handleFlowFocus(item.id, 'measuredFlow')}
                 onBlur={() => handleFlowBlur(item, 'measuredFlow')}
+                keyboardType="numeric"
+                placeholder="0"
+                placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
+                selectTextOnFocus={true}
+              />
+            </View>
+            
+            <View style={styles.flowEditingField}>
+              <View style={styles.flowLabelContainer}>
+                <Text style={styles.flowEditingLabel}>V.</Text>
+                <Text style={styles.flowEditingUnit}>(m/s)</Text>
+              </View>
+              <TextInput
+                style={[
+                  styles.flowEditingInput,
+                  isDark && styles.flowEditingInputDark
+                ]}
+                value={editData?.velocity || (item.velocity || 0).toString()}
+                onChangeText={(text) => handleFlowChange(item.id, 'velocity', text)}
+                onFocus={() => handleFlowFocus(item.id, 'velocity')}
+                onBlur={() => handleFlowBlur(item, 'velocity')}
                 keyboardType="numeric"
                 placeholder="0"
                 placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}

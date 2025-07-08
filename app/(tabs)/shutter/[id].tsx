@@ -23,10 +23,12 @@ export default function ShutterDetailScreen() {
   const [editingFlows, setEditingFlows] = useState<{
     referenceFlow: string;
     measuredFlow: string;
+    velocity: string;
     hasBeenFocused: { referenceFlow: boolean; measuredFlow: boolean };
   }>({
     referenceFlow: '0',
     measuredFlow: '0',
+    velocity: '0',
     hasBeenFocused: { referenceFlow: false, measuredFlow: false }
   });
 
@@ -73,6 +75,7 @@ export default function ShutterDetailScreen() {
       setEditingFlows({
         referenceFlow: shutter.referenceFlow.toString(),
         measuredFlow: shutter.measuredFlow.toString(),
+        velocity: (shutter.velocity || 0).toString(),
         hasBeenFocused: { referenceFlow: false, measuredFlow: false }
       });
     }
@@ -141,14 +144,14 @@ export default function ShutterDetailScreen() {
   };
 
   // NOUVEAU : Fonctions pour l'édition directe des débits
-  const handleFlowChange = useCallback((field: 'referenceFlow' | 'measuredFlow', value: string) => {
+  const handleFlowChange = useCallback((field: 'referenceFlow' | 'measuredFlow' | 'velocity', value: string) => {
     setEditingFlows(prev => ({
       ...prev,
       [field]: value
     }));
   }, []);
 
-  const handleFlowFocus = useCallback((field: 'referenceFlow' | 'measuredFlow') => {
+  const handleFlowFocus = useCallback((field: 'referenceFlow' | 'measuredFlow' | 'velocity') => {
     setEditingFlows(prev => {
       // Si c'est le premier focus ET que la valeur est "0", l'effacer
       if (!prev.hasBeenFocused[field] && prev[field] === '0') {
@@ -173,11 +176,12 @@ export default function ShutterDetailScreen() {
     });
   }, []);
 
-  const handleFlowBlur = useCallback(async (field: 'referenceFlow' | 'measuredFlow') => {
+  const handleFlowBlur = useCallback(async (field: 'referenceFlow' | 'measuredFlow' | 'velocity') => {
     if (!shutter) return;
 
     const refFlow = parseFloat(editingFlows.referenceFlow);
     const measFlow = parseFloat(editingFlows.measuredFlow);
+    const velocity = parseFloat(editingFlows.velocity);
 
     // Validation des valeurs
     if (isNaN(refFlow) || refFlow < 0) {
@@ -198,8 +202,17 @@ export default function ShutterDetailScreen() {
       return;
     }
 
+    if (isNaN(velocity) || velocity < 0) {
+      // Restaurer la valeur originale en cas d'erreur
+      setEditingFlows(prev => ({
+        ...prev,
+        velocity: (shutter.velocity || 0).toString()
+      }));
+      return;
+    }
+
     // Vérifier si les valeurs ont changé
-    const hasChanged = refFlow !== shutter.referenceFlow || measFlow !== shutter.measuredFlow;
+    const hasChanged = refFlow !== shutter.referenceFlow || measFlow !== shutter.measuredFlow || velocity !== (shutter.velocity || 0);
     
     if (hasChanged) {
       try {
@@ -207,6 +220,7 @@ export default function ShutterDetailScreen() {
         await storage.updateShutter(shutter.id, {
           referenceFlow: refFlow,
           measuredFlow: measFlow,
+          velocity: velocity,
         });
         
         // CORRIGÉ : Mise à jour instantanée de l'état local
@@ -216,11 +230,12 @@ export default function ShutterDetailScreen() {
             ...prevShutter,
             referenceFlow: refFlow,
             measuredFlow: measFlow,
+            velocity: velocity,
             updatedAt: new Date()
           };
         });
         
-        console.log(`✅ Volet ${shutter.name} mis à jour instantanément: ${refFlow}/${measFlow}`);
+        console.log(`✅ Volet ${shutter.name} mis à jour instantanément: ${refFlow}/${measFlow}/${velocity}`);
         
       } catch (error) {
         console.error('Erreur lors de la sauvegarde automatique:', error);
@@ -228,7 +243,8 @@ export default function ShutterDetailScreen() {
         setEditingFlows(prev => ({
           ...prev,
           referenceFlow: shutter.referenceFlow.toString(),
-          measuredFlow: shutter.measuredFlow.toString()
+          measuredFlow: shutter.measuredFlow.toString(),
+          velocity: (shutter.velocity || 0).toString()
         }));
       }
     }
@@ -357,6 +373,24 @@ export default function ShutterDetailScreen() {
                   onChangeText={(text) => handleFlowChange('measuredFlow', text)}
                   onFocus={() => handleFlowFocus('measuredFlow')}
                   onBlur={() => handleFlowBlur('measuredFlow')}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  placeholderTextColor="#9CA3AF"
+                  selectTextOnFocus={true}
+                />
+              </View>
+              
+              <View style={styles.flowEditingField}>
+                <View style={styles.flowLabelContainer}>
+                  <Text style={styles.flowEditingLabel}>V.</Text>
+                  <Text style={styles.flowEditingUnit}>(m/s)</Text>
+                </View>
+                <TextInput
+                  style={styles.flowEditingInput}
+                  value={editingFlows.velocity}
+                  onChangeText={(text) => handleFlowChange('velocity', text)}
+                  onFocus={() => handleFlowFocus('velocity')}
+                  onBlur={() => handleFlowBlur('velocity')}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor="#9CA3AF"

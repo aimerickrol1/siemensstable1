@@ -34,6 +34,7 @@ export interface Shutter {
   type: 'high' | 'low'; // Volet Haut ou Bas
   referenceFlow: number; // Débit de référence
   measuredFlow: number; // Débit mesuré
+  velocity?: number; // Vitesse mesurée en m/s
   remarks?: string;
   createdAt: Date;
   updatedAt: Date;

@@ -15,9 +15,10 @@ export default function CreateShutterScreen() {
   const [type, setType] = useState<ShutterType>('high');
   const [referenceFlow, setReferenceFlow] = useState('0');
   const [measuredFlow, setMeasuredFlow] = useState('0');
+  const [velocity, setVelocity] = useState('0');
   const [remarks, setRemarks] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; referenceFlow?: string; measuredFlow?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; referenceFlow?: string; measuredFlow?: string; velocity?: string }>({});
 
   // NOUVEAU : Détecter le thème système
   const colorScheme = useColorScheme();
@@ -74,7 +75,7 @@ export default function CreateShutterScreen() {
   };
 
   const validateForm = () => {
-    const newErrors: { name?: string; referenceFlow?: string; measuredFlow?: string } = {};
+    const newErrors: { name?: string; referenceFlow?: string; measuredFlow?: string; velocity?: string } = {};
 
     if (!name.trim()) {
       newErrors.name = strings.nameRequired;
@@ -88,6 +89,11 @@ export default function CreateShutterScreen() {
     const measFlow = parseFloat(measuredFlow);
     if (!measuredFlow || isNaN(measFlow) || measFlow < 0) {
       newErrors.measuredFlow = strings.positiveOrZeroRequired;
+    }
+
+    const vel = parseFloat(velocity);
+    if (!velocity || isNaN(vel) || vel < 0) {
+      newErrors.velocity = strings.positiveOrZeroRequired;
     }
 
     setErrors(newErrors);
@@ -104,6 +110,7 @@ export default function CreateShutterScreen() {
         type,
         referenceFlow: parseFloat(referenceFlow),
         measuredFlow: parseFloat(measuredFlow),
+        velocity: parseFloat(velocity),
         remarks: remarks.trim() || undefined,
       });
 
@@ -187,6 +194,16 @@ export default function CreateShutterScreen() {
           placeholder="Ex: 4800"
           keyboardType="numeric"
           error={errors.measuredFlow}
+          clearZeroOnFocus={true}
+        />
+
+        <Input
+          label="Vitesse (m/s) *"
+          value={velocity}
+          onChangeText={setVelocity}
+          placeholder="Ex: 2.5"
+          keyboardType="numeric"
+          error={errors.velocity}
           clearZeroOnFocus={true}
         />
 

@@ -21,10 +21,11 @@ export default function EditShutterScreen() {
   const [type, setType] = useState<ShutterType>('high');
   const [referenceFlow, setReferenceFlow] = useState('');
   const [measuredFlow, setMeasuredFlow] = useState('');
+  const [velocity, setVelocity] = useState('');
   const [remarks, setRemarks] = useState('');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [errors, setErrors] = useState<{ name?: string; referenceFlow?: string; measuredFlow?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; referenceFlow?: string; measuredFlow?: string; velocity?: string }>({});
 
   // NOUVEAU : Détecter le thème système
   const colorScheme = useColorScheme();
@@ -64,6 +65,7 @@ export default function EditShutterScreen() {
               setType(foundShutter.type);
               setReferenceFlow(foundShutter.referenceFlow.toString());
               setMeasuredFlow(foundShutter.measuredFlow.toString());
+              setVelocity((foundShutter.velocity || 0).toString());
               setRemarks(foundShutter.remarks || '');
               return;
             }
@@ -96,7 +98,7 @@ export default function EditShutterScreen() {
   };
 
   const validateForm = () => {
-    const newErrors: { name?: string; referenceFlow?: string; measuredFlow?: string } = {};
+    const newErrors: { name?: string; referenceFlow?: string; measuredFlow?: string; velocity?: string } = {};
 
     if (!name.trim()) {
       newErrors.name = strings.nameRequired;
@@ -110,6 +112,11 @@ export default function EditShutterScreen() {
     const measFlow = parseFloat(measuredFlow);
     if (!measuredFlow || isNaN(measFlow) || measFlow < 0) {
       newErrors.measuredFlow = strings.positiveOrZeroRequired;
+    }
+
+    const vel = parseFloat(velocity);
+    if (!velocity || isNaN(vel) || vel < 0) {
+      newErrors.velocity = strings.positiveOrZeroRequired;
     }
 
     setErrors(newErrors);
@@ -126,6 +133,7 @@ export default function EditShutterScreen() {
         type,
         referenceFlow: parseFloat(referenceFlow),
         measuredFlow: parseFloat(measuredFlow),
+        velocity: parseFloat(velocity),
         remarks: remarks.trim() || undefined,
       });
 
@@ -253,6 +261,16 @@ export default function EditShutterScreen() {
           keyboardType="numeric"
           error={errors.measuredFlow}
           clearZeroOnFocus={measuredFlow === '0'}
+        />
+
+        <Input
+          label="Vitesse (m/s) *"
+          value={velocity}
+          onChangeText={setVelocity}
+          placeholder="Ex: 2.5"
+          keyboardType="numeric"
+          error={errors.velocity}
+          clearZeroOnFocus={velocity === '0'}
         />
 
         <Input
