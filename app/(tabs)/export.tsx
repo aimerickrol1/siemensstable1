@@ -90,7 +90,7 @@ export default function ExportScreen() {
       compliantCount,
       acceptableCount,
       nonCompliantCount,
-      complianceRate: totalShutters > 0 ? (compliantCount / totalShutters) * 100 : 0
+      complianceRate: totalShutters > 0 ? ((compliantCount + acceptableCount) / totalShutters) * 100 : 0
     };
   };
 
