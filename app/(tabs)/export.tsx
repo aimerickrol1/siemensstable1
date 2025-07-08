@@ -695,7 +695,7 @@ export default function ExportScreen() {
                         <th class="col-shutter">Volet</th>
                         <th class="col-ref-flow">Débit Réf. (m³/h)</th>
                         <th class="col-measured-flow">Débit Mesuré (m³/h)</th>
-                        <th class="col-velocity">V. (m/s)</th>
+                        <th class="col-velocity">Vitesse (m/s)</th>
                         <th class="col-deviation">Écart (%)</th>
                         <th class="col-status">Statut</th>
                         <th class="col-remarks">Remarques</th>

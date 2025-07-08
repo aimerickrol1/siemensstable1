@@ -703,7 +703,7 @@ export default function ZoneDetailScreen() {
             
             <View style={styles.flowEditingField}>
               <View style={styles.flowLabelContainer}>
-                <Text style={styles.flowEditingLabel}>V.</Text>
+                <Text style={styles.flowEditingLabel}>Vitesse</Text>
                 <Text style={styles.flowEditingUnit}>(m/s)</Text>
               </View>
               <TextInput
