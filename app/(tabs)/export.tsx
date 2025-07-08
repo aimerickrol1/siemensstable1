@@ -411,7 +411,7 @@ export default function ExportScreen() {
             background: linear-gradient(135deg, #009999 0%, #007a7a 100%);
             color: white;
             padding: 12px 8px; /* RÉDUIT pour mobile */
-            text-align: left;
+          text-align: center;
             font-weight: 600;
             font-size: 12px; /* RÉDUIT pour mobile */
             text-transform: uppercase;
