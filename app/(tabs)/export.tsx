@@ -459,15 +459,15 @@ export default function ExportScreen() {
         }
         
         /* Colonnes spécifiques - OPTIMISÉES */
-        .col-building { width: 15%; min-width: 100px; }
-        .col-zone { width: 15%; min-width: 80px; }
-        .col-shutter { width: 15%; min-width: 80px; }
-        .col-ref-flow { width: 12%; min-width: 70px; text-align: center; }
-        .col-measured-flow { width: 12%; min-width: 70px; text-align: center; }
-        .col-velocity { width: 8%; min-width: 50px; text-align: center; }
-        .col-deviation { width: 8%; min-width: 60px; text-align: center; }
-        .col-status { width: 10%; min-width: 80px; text-align: center; }
-        .col-remarks { width: 15%; min-width: 100px; }
+        .col-building { width: 12%; min-width: 80px; }
+        .col-zone { width: 10%; min-width: 60px; }
+        .col-shutter { width: 8%; min-width: 50px; }
+        .col-ref-flow { width: 10%; min-width: 60px; text-align: center; }
+        .col-measured-flow { width: 10%; min-width: 60px; text-align: center; }
+        .col-velocity { width: 8%; min-width: 45px; text-align: center; }
+        .col-deviation { width: 8%; min-width: 50px; text-align: center; }
+        .col-status { width: 10%; min-width: 70px; text-align: center; }
+        .col-remarks { width: 24%; min-width: 150px; }
         
         /* Pied de page */
         .footer {
